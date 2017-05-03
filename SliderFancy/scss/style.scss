@@ -1,0 +1,153 @@
+@import "compass/css3";
+
+$input-pad: .5em;
+
+$track-w: 20em;
+$track-h: .75em;
+$track-bg: #e9e9e9;
+$track-fill: #88b1d7;
+
+$thumb-bg: #fefefe;
+
+$tooltip-bg: #767676;
+
+@mixin track($lower: true) {
+  box-sizing: border-box;
+  border: solid 1px #d1d1d1;
+  width: $track-w; height: $track-h;
+  border-radius: $track-h/2;
+  box-shadow: inset 0 .125em .125em #aaa;
+  background: $track-bg;
+  
+  @if($lower) {
+    .js & {
+      background: $track-bg
+        linear-gradient($track-fill, $track-fill) 
+        no-repeat 0 50%;
+      background-size: 50% 100%;
+    }
+  }
+}
+
+@mixin thumb() {
+  box-sizing: border-box;
+  border: none;
+  border: solid .3125em $thumb-bg;
+  border-right-width: .5em;
+  border-left-width: .5em;
+  width: 2em; height: 1.5em;
+  border-radius: .25em;
+  box-shadow: 0 .25em .125em #d2d2d2;
+  background: $thumb-bg
+    linear-gradient(90deg, 
+      #cfcfcf 50%, transparent 50%) 
+    1px 50% content-box;
+  /* wtf is wrong with you, Chrome? */
+  background-size: .25em 100%;
+}
+
+html {
+  height: 100%;
+  background: #f3f3f3;
+}
+
+[class*='-ms-']:before { opacity: .15; }
+
+input[type='range'] {
+  box-sizing: border-box;
+  overflow: visible;
+  position: absolute;
+  -webkit-appearance: none;
+  top: 50%; left: 50%;
+  padding: $input-pad;
+  width: $track-w + 2*$input-pad;
+  height: $track-h + 5*$input-pad;
+  border-radius: .25em;
+  transform: translate(-50%, -50%);
+  background: transparent;
+  
+  /* Firefox & Chrome/ Opera need this, 
+     otherwise font-size is smaller */
+  font-size: 1em;
+  cursor: pointer;
+
+  &::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    @include track();
+  }
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    margin-top: -.5em; /* weird shit, Chrome */
+    @include thumb();
+    background-size: 55% 55%; /* this too :| */
+  }
+
+  &::-moz-range-track {
+    z-index: -1; /* fix Firefox WTF */
+    @include track();
+  }
+
+  &::-moz-range-thumb {
+    @include thumb();
+    
+    /* Firefox-only, it won't work in IE 
+       and it's messed up in Chrome */
+    cursor: ew-resize;
+  }
+
+  &::-ms-track {
+    overflow: hidden;
+    @include track(false);
+    color: transparent;
+  }
+
+  &::-ms-thumb {
+    @include thumb();
+  }
+
+  &::-ms-fill-lower {
+    border-radius: $track-h/2;
+    background: $track-fill;
+  }
+  
+  &::-ms-fill-upper {
+    background: transparent;
+  }
+  
+  /* wish I could style this asshole */
+  //&::-ms-tooltip { display: none; }
+  
+  &:focus {
+    outline: none;
+    background-color: rgba(silver, .25);
+  }
+  
+  .js & /deep/ #thumb {
+    position: relative;
+    
+    &:before, &:after {
+      position: absolute;
+      left: 50%;
+      background: $tooltip-bg;
+    }
+    
+    &:before {
+      margin: -3em -2em;
+      width: 4em;
+      border-radius: .25em;
+      color: #fff;
+      font-weight: 600;
+      line-height: 2;
+      text-align: center;
+      content: '50%';
+    }
+    
+    &:after {
+      margin: -1.5em -.365em;
+      width: .75em; height: .75em;
+      transform: rotate(-45deg);
+      content: '';
+    }
+  }
+}

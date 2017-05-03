@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load media %}
+{% block title %}Canvas demo{% endblock %}
+
+{% block extra-html %}manifest="{% media_url 'canvas.manifest' %}"{% endblock %}
+
+{% block css %}
+  {% include_media 'main.css' %}
+{% endblock %}
+
+{% block js %}
+  {% include_media 'main.js' %}
+{% endblock %}
+
+{% block extra-head %}
+  <meta name="viewport" content="initial-scale=1.0, width=device-width, height=device-height, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+{% endblock %}
+
+{% block header %}
+Offline canvas Python web app demo
+{% endblock %}
