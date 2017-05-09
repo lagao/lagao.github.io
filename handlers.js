@@ -9,7 +9,8 @@ var CursorModeEnum = {
 		T_JUNCT: 'PLACE.T_JUNCT',
 		CROSS_JUNCT: 'PLACE.CROSS_JUNCT',
 		VERTEX: 'PLACE.VERTEX',
-		PILLAR: 'PLACE.PILLAR'
+		PILLAR: 'PLACE.PILLAR',
+		RECT: 'PLACE.RECT'
 	},
 
 	SELECT: {
@@ -55,21 +56,59 @@ function redo_handler(event){
 	}
 }
 
-function copy_handler(){
+
+function cut_handler(event){
+	console.log("cut");
 	//Clear the current clipboard
 	clipboardCollection = new Collection();
 
-	//Add the current selectinon to the clipboard
+	//Add the current selection to the clipboard
 	clipboardCollection.channel.addChannel(selectedCollection.channel);
+
+	//Remove the current selection from the overall pattern
+	collection.deleteCollection(clipboardCollection); //delete clipboard collection 
+
+	console.log("selected collection cut");
+	console.log(selectedCollection.channel);
+	console.log("clipboard collection cut");
+	console.log(clipboardCollection.channel);
 
 	return;
 }
 
-function paste_handler(){
+function copy_handler(event) {
+	console.log("cut");
+	//Clear the current clipboard
+	clipboardCollection = new Collection();
 
+	//Add the current selection to the clipboard
+	clipboardCollection.channel.addChannel(selectedCollection.channel);
+	console.log("selected collection cut");
+	console.log(selectedCollection.channel);
+	console.log("clipboard collection cut");
+	console.log(clipboardCollection.channel);
+
+	return;
+}
+
+function paste_handler(event){
+	console.log("paste");
+
+	//Move clipboard collection to the desired location
+	clipboardCollection = moveCollection(clipboardCollection, event, true); //move clipboard collection to new location
+
+	console.log(clipboardCollection.channel); //has the location moved?
 	//Add the current clipboard to the preview
-
+	var previewCollection = new Collection();
 	previewCollection.channel.addChannel(clipboardCollection.channel);
+	console.log("clipboard collection");
+	console.log(clipboardCollection.channel);
+	console.log("preview collection");
+	console.log(previewCollection.channel);
+
+	//Shift everything in the preview collection by mouse position
+
+	collection.channel.addChannel(previewCollection.channel);
 
 	return;
 }
@@ -148,6 +187,11 @@ function collection_region_handler(event){
  	//document.getElementById("collection").style.display="none";
 	hideAllSliders();
 	document.getElementById('collection_sliders').style.display = 'block';
+}
+
+function rect_region_handler(event){
+	cursorMode = CursorModeEnum.PLACE.RECT;
+	hideAllSliders();
 }
 
 function pillar_handler(event){

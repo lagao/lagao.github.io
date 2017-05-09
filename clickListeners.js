@@ -12,6 +12,54 @@ function channelClickListener(e){
 	redraw(); //command to update the function
 }
 
+function rectClickDownListener(e){
+	console.log("click down");
+	document.getElementById("canvasDiv").style.cursor = "crosshair";
+	var gridSize = 20; //TODO: set globally and import so it can be dynamically changed
+	var mouseX = snapMouseCoord(e.pageX-canvas.offsetLeft, gridSize);
+	var mouseY = snapMouseCoord(e.pageY-canvas.offsetTop, gridSize);
+	paint = true;
+	rectX1 = mouseX;
+	rectY1 = mouseY;
+	redraw(); //command to update the function
+}
+
+function rectClickMoveListener(e){
+	console.log("click move");
+	var gridSize = 20; //TODO: set globally and import so it can be dynamically changed
+	var mouseX = snapMouseCoord(e.pageX-canvas.offsetLeft, gridSize);
+	var mouseY = snapMouseCoord(e.pageY-canvas.offsetTop, gridSize);
+	paint = true;
+	rectX2 = mouseX;
+	rectY2 = mouseY;
+	redraw();
+}
+
+function rectClickUpListener(e){
+	console.log("click up");
+	var gridSize = 20; //TODO: set globally and import so it can be dynamically changed
+	var mouseX = snapMouseCoord(e.pageX-canvas.offsetLeft, gridSize);
+	var mouseY = snapMouseCoord(e.pageY-canvas.offsetTop, gridSize);
+	paint = true;
+	rectX2 = mouseX;
+	rectY2 = mouseY;
+	console.log("rect 1, 2");	
+	console.log(rectX1);
+	console.log(rectY1);
+	console.log(rectX2);
+	console.log(rectY2);
+	var node = new Node(rectX1, rectY1, 0, 1, rectX2 - rectX1, rectY2 - rectY1);
+	collection.channel.nodes.push(node);
+	collection.channel.edges.push([]);
+	console.log(collection.channel);
+	redraw();
+	rectX1 = -1;
+	rectX2 = -1;
+	rectY1 = -1;
+	rectY2 = -1;
+	//Add vertex to the graph
+}
+
 function helixClickListener(e){	
 	var gridSize = 20; //TODO: set globally and import so it can be dynamically changed
 	var mouseX = snapMouseCoord(e.pageX-canvas.offsetLeft, gridSize);

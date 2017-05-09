@@ -49,7 +49,7 @@ var redoStack = new Array();
 	<body onload="redraw()">
     <div id="top">
 	    
-	    <h4>Press "a" to create channels. Press 'h' to drop helix. Press 't' to drop t junction. Press 'x' to drop cross mixer.</h4>
+	    <h4> </h4>
 	    <br>
         
 <!-- Buttons -->
@@ -71,6 +71,8 @@ var redoStack = new Array();
     <button class="button" onclick="channel_handler()">Channel</button>
     
     <button class="button" onclick="collection_region_handler()">Collection Region</button>
+
+    <button class="button" onClick="rect_region_handler()">Rectangular Region </button>
     
     <button class="button" onclick="move_handler()"><img src="images/move.png" width="20" height="20"></button>
     
@@ -268,13 +270,40 @@ var redoStack = new Array();
 
 	var hel = false;
 
+	var rectX1 = -1, rectY1 = -1, rectX2 = -1, rectY2 = -1;
 
 	// PREVENT BOX ENTER FROM REFRESHING PAGE
+
+	var commandControl = false;
+	
 
 	function keyPressHandler(e){
 		console.log(e.keyCode);
 		if (e.keyCode == 13) e.preventDefault(); //don't refresh page when enter in box
 
+		//Control or command entered
+		if (e.keyCode == 17 || e.keyCode == 91){
+			//Control or command
+			commandControl = true;
+		}
+
+		//Ctrl X
+		if (e.keyCode == 88) {
+			if (commandControl) cut_handler(e);
+			commandControl = false;
+		}
+
+		//Ctrl V
+		if (e.keyCode == 86){
+			if (commandControl) paste_handler(e);
+			commandControl = false;
+		}
+
+		if (e.keyCode == 67) {
+			if (commandControl) copy_handler(e);
+			commandControl = false;
+		}
+			
 		//Press esc to revert to pointer mode
 		if (e.keyCode == 27)	pointer_select_handler(e);
 
@@ -304,14 +333,7 @@ var redoStack = new Array();
 		if (e.keyCode == 72) {
 			cursorMode = CursorModeEnum.PLACE.HELIX;
 		}
-		//Press T to go into T-junction mode
-		if (e.keyCode == 84) {
-			cursorMode = CursorModeEnum.PLACE.T_JUNCT;
-		}
-		//Press X to go into cross junction mode
-		if (e.keyCode == 88) {
-			cursorMode = CursorModeEnum.PLACE.CROSS_JUNCT;
-		}
+
 		//Press S to save
 		if (e.keyCode == 83) {
 			console.log(JSON.stringify(collection)); //Save this to server somehow? 
@@ -344,6 +366,10 @@ var redoStack = new Array();
 				boxSelectMouseMoveListener(e);
 				break;
 
+			case CursorModeEnum.PLACE.RECT:
+				rectClickMoveListener(e);
+				break;
+
 			case CursorModeEnum.OPERATE.MOVE:
 				moveDragListeners(e);
 				storeUndoState(); //push things to undo stack
@@ -366,14 +392,16 @@ var redoStack = new Array();
 	// MOUSE DOWN EVENT //
 	//Changed mousedown to "canvas" -> seems to give us all the functionality we need
 	canvas.addEventListener('mousedown', function(e){
-
+		
 		switch(cursorMode) {
 
 			//If the user is trying to place an object:
-			case CursorModeEnum.PLACE.CHANNEL:
+			case CursorModeEnum.PLACE.CHANNEL:		
+				console.log("channel");
 				channelClickListener(e);
 				break;
-			case CursorModeEnum.PLACE.HELIX:
+			case CursorModeEnum.PLACE.HELIX:	
+				console.log("helix");
 				helixClickListener(e);
 				break;
 			case CursorModeEnum.PLACE.T_JUNCT:	
@@ -383,22 +411,31 @@ var redoStack = new Array();
 				crossJunctClickListener(e);
 				break;
 			case CursorModeEnum.PLACE.VERTEX:
+				console.log("vertex");
 				collectionRegionClickListener(e);
 				break;
 			case CursorModeEnum.PLACE.PILLAR:
+				console.log("pillar");
 				pillarClickListener(e);
+				break;
+			case CursorModeEnum.PLACE.RECT:
+				console.log("rect");
+				rectClickDownListener(e);
 				break;
 
 			//If the user is trying to select an object:
 			case CursorModeEnum.SELECT.POINTER:
+				console.log("ptr");
 				pointerSelectClickListener(e);
 				break;
 			case CursorModeEnum.SELECT.BOX:
+				console.log("box");
 				boxSelectMouseDownListener(e);
 				break;
 
 			//If the user is trying to operate on a collection
 			case CursorModeEnum.OPERATE.MOVE:
+				console.log("move");
 				//TODO: Add listener to deal with translation
 				moveMouseDownListener(e);
 				break;
@@ -422,6 +459,9 @@ var redoStack = new Array();
 				anchorMouseY = -1;
 				anchorMouseX = -1;
 				break;
+
+			case CursorModeEnum.PLACE.RECT:
+				rectClickUpListener(e);
 
 			case CursorModeEnum.SELECT.BOX:
 				//cursorMode = CursorModeEnum.SELECT.POINTER;

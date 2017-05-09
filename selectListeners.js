@@ -12,9 +12,13 @@ function pointerSelectHoverListener(e){
 	else{
 		document.getElementById("canvasDiv").style.cursor = "auto";
 	}	
+	//Selected collection - change width of all edges to the width of the channel slider
+	document.getElementById('channel_sliders').style.display = 'block'; //Display channel slider again so you can change the width
+
 }
 
 function pointerSelectClickListener(e){
+
 
 	//Check if there are any nodes or edges within thresh of the mouse
 	nearestNode = findNearestNode(mouseX, mouseY);
@@ -52,6 +56,8 @@ function pointerSelectClickListener(e){
 	else{
 		selectedCollection = new Collection();
 	}
+	//Change width of selected collection
+
 }
 
 function boxSelectMouseDownListener(e){

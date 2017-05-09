@@ -15,32 +15,65 @@ class Channel{
 
 		console.log("currNodeIndex: " + currNodeIndex);
 
-		//If this node doesn't exist,
+		//If this node doesn't exist, don't delete it
 		if(currNodeIndex == -1){
-			console.log("Trying to delete a non-existant node!");
+			console.log("Trying to delete a non-existent node!");
 			return;
 		}
 
-		//If this node does exist,
+		//If this node does exist, delete it
+		this.edges[currNodeIndex] = null;
+		this.nodes[currNodeIndex] = null;
 
-/*		for(var i = 0; i<this.edges[currNodeIndex].length; i++){
-			console.log('edge to delete: ');
-			console.log(this);
-			console.log(this.edges[currNodeIndex][i]);
-			this.deleteEdge(this.edges[currNodeIndex][i]);
+		/*for(var i = 0; i<this.nodes.length; i++){
+			if (this.edges[i] == null) continue; //if it is null, do not try to delete it
+			for (var j = 0; j < this.edges[i].length; j++){
+				if (this.edges[i][j].v == currNodeIndex || this.edges[i][j].u == currNodeIndex){
+					this.edges[i].splice(j, 1); //If either of the vertices connected to the edge is the vertex to remove, splice that edge
+				}
+			}
+
 		}
-		this.edges.splice(currNodeIndex, 1);
-		this.nodes.splice(currNodeIndex, 1);
-*/
+		this.edges[currNodeIndex] = null; //there has got to be a better fix than this
+		this.nodes[currNodeIndex] = null;
+
+		for (var i = 0; i < this.nodes.length; i++){
+			if (this.edges[i] == null) continue;
+			if (this.edges[i].length == 0){
+				this.edges[i] = null; //if no edges left to attach to a node
+				this.nodes[i] = null; //set the node and its edge list to null (avoid index)
+			}
+		}*/
+		
+		/*this.edges.splice(currNodeIndex, 1);
+		this.nodes.splice(currNodeIndex, 1); //delete the node
+		console.log("nodes");
+		console.log(this.nodes);
+		console.log("edges");
+		console.log(this.edges);*/
+
 	}
 
 	deleteEdge(edgeToDelete){
+		if (edgeToDelete == null) return;
 		console.log("Now deleting edge");
-		var forwardIndex = this.edges[edgeToDelete.u].indexOf(edgeToDelete);
-		var reverseIndex = this.edges[edgeToDelete.v].indexOf(edgeToDelete.reverseEdge);
+		
+		console.log(edgeToDelete.u);
+		console.log(edgeToDelete.v);
 
-		this.edges[edgeToDelete.u].splice(forwardIndex);
-		this.edges[edgeToDelete.v].splice(reverseIndex);
+		var forwardIndex = this.edges[edgeToDelete.u].indexOf(edgeToDelete);
+		var reverseIndex = this.edges[edgeToDelete.v].indexOf(edgeToDelete.reverseEdge());
+
+		console.log("u fwd v rev");
+		console.log(edgeToDelete);
+		console.log(this.edges[edgeToDelete.u]);
+		console.log(edgeToDelete.reverseEdge());
+		console.log(this.edges[edgeToDelete.v]);
+
+		this.edges[edgeToDelete.u][forwardIndex] = null; //need to fix this
+		this.edges[edgeToDelete.v][reverseIndex] = null; //don't want to fill data with nulls
+		//this.edges[edgeToDelete.u].splice(forwardIndex);
+		//this.edges[edgeToDelete.v].splice(reverseIndex);
 
 	}
 
@@ -75,21 +108,67 @@ class Channel{
 		return currNodeIndex;
 	}
 
+
 	//TODO: Not usable yet. Have to pass in collection arg
 	//See selectListeners.js pointerSelectClickListener as e.g.
-	addEdge(edgeToAdd){
-		console.log("edgeToAdd:");
-		console.log(edgeToAdd);
+	addEdge(channel, edgeToAdd){
 
-		var uIndex = this.addNode(edgeToAdd.u);
-		var vIndex = this.addNode(this.nodes[edgeToAdd.v]);
+		var uIndex = this.addNode(channel.nodes[edgeToAdd.u]);
+		var vIndex = this.addNode(channel.nodes[edgeToAdd.v]);
 
-		console.log("uIndex: " + uIndex + "| vIndex: " + vIndex);
+		var newEdge = new Edge(uIndex, vIndex, edgeToAdd.weight, edgeToAdd.type, edgeToAdd.wavelength, edgeToAdd.amplitude);
+		
+		this.edges[uIndex].push(newEdge);
+		this.edges[vIndex].push(newEdge.reverseEdge());
+
+	}
+
+	//Removes edge from a channel
+	removeEdge(channel, edgeToRemove){
+		//Get the actual nodes from channel
+		var uNode = channel.nodes[edgeToRemove.u];
+		var vNode = channel.nodes[edgeToRemove.v];
+		//Identify edge within this, not channel
+		var localUIndex = this.nodes.indexOf(uNode);	
+		var localVIndex = this.nodes.indexOf(vNode);
+		if (localUIndex == -1 || localVIndex == -1){
+			console.log("could not delete non-existent edge");
+		}
+		//Delete constructed edge
+		var edge = new Edge(localUIndex, localVIndex, edgeToRemove.weight, edgeToRemove.type, edgeToRemove.wavelength, edgeToRemove.amplitude);
+		this.deleteEdge(edge);	//Deletes a local edge
+	
+	}
+
+	addChannel(channel){
+		for (var i = 0; i < channel.nodes.length; i++){
+			for (var j = 0; j < channel.edges[i].length; j++){
+				this.addEdge(channel, channel.edges[i][j]);
+			}
+		}
+	}
+
+	removeChannel(channel) {
+		//Remove all the edges that have been selected
+		for (var i = 0; i < channel.nodes.length; i++){
+			if (channel.edges[i] == null) continue;
+			for (var j = 0; j < channel.edges[i].length; j++){
+				console.log("removing this edge");
+				console.log(channel.edges[i][j]);
+				this.removeEdge(channel, channel.edges[i][j]);
+			}
+		}
+
+		for (var i = 0; i < channel.nodes.length; i++){
+			if (channel.edges[i] == null) continue;
+			if (channel.edges[i].length == 0) {
+				console.log("Deleting a node");
+				this.deleteNode(channel.nodes[i]); //if all the edges are disconnected from a node, remove the node
+			}
+		}
+		console.log("Removed all edges, have channel left");
 		console.log(this);
-
-		this.edges[uIndex].push(edgeToAdd);
-		this.edges[vIndex].push(edgeToAdd.reverseEdge);
-
+		
 	}
 
 	distBetweenNodes(u, v){
@@ -109,10 +188,13 @@ class Channel{
 
 class Node{
 	//Add color and type later
-	constructor(x, y, r){
+	constructor(x, y, r, type, w, h){
 		this.x = x;
 		this.y = y;
 		this.r = r;
+		this.type = type; //type = 0 for round, 1 for rect
+		this.w = w; //w = width for rect
+		this.h = h; //h = height for rect
 	}
 }
 
@@ -127,7 +209,7 @@ class Edge{
 	}
 
 	reverseEdge(){
-		return new Edge(v, u, weight, type, wavelength, amplitude);
+		return new Edge(this.v, this.u, this.weight, this.type, this.wavelength, this.amplitude);
 	}
 
 	equals(otherEdge){
@@ -221,6 +303,10 @@ class Collection{
 		//So as not to break the invariant that the index of a node is the same as the u or v value from an edge
 		//The node itself won't be actually deleted but set to null
 		for (var i = 0; i < this.channel.nodes.length; i++){
+			if (this.channel.edges[i] == null) {
+				this.channel.nodes[i] = null; //set null
+				continue;
+			}
 			//If all the edges connected to a node have been deleted
 			//And the node is not an obviously large collection region
 			//Delete the node

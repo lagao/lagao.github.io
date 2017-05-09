@@ -21,12 +21,27 @@ function draw(collection, color){
 		//Draw a circle where the node is
 		var node = collection.channel.nodes[i];
 		if (node == null) continue;
-	      context.beginPath();
-	      context.arc(node.x, node.y, node.r, 0, 2 * Math.PI, false);
-	      context.fillStyle = color;
-	      context.fill();
-	      context.lineWidth = 5;
-	      context.stroke();		
+
+		if (node.type == 1) {
+			//It is a rectangular collection region
+			context.strokeStyle = "#aaaaaa";
+			context.lineWidth = 2;
+			console.log("rectangle to write");
+			console.log(rectX1);
+			console.log(rectY1);
+			console.log(rectX2);
+			console.log(rectY2);
+			context.fillRect(node.x, node.y, node.w, node.h);
+			context.setLineDash([0, 0]);
+			continue;
+		}
+
+	        context.beginPath();
+	        context.arc(node.x, node.y, node.r, 0, 2 * Math.PI, false);
+	        context.fillStyle = color;
+	        context.fill();
+	        context.lineWidth = 5;
+	        context.stroke();		
 		if (collection.channel.edges[i] == null || collection.channel.edges[i].length == 0){ //Just draw a dot if there are no edges connected to the node
 			//context.beginPath();
 			///context.moveTo(collection.channel.nodes[i].x-1, collection.channel.nodes[i].y-1); //TODO: use fillRect() like in the drawGrid() function to clean this up
@@ -73,6 +88,20 @@ function redraw(){
 		context.setLineDash([0, 0]);
 	}
 
+	//Draw the square collection region outline
+	if(cursorMode == CursorModeEnum.PLACE.RECT){
+		if (rectX1 != -1) {
+			context.strokeStyle = "#aaaaaa";
+			context.lineWidth = 2;
+			console.log("rectangle to write");
+			console.log(rectX1);
+			console.log(rectY1);
+			console.log(rectX2);
+			console.log(rectY2);
+			context.fillRect(rectX1, rectY1, rectX2-rectX1, rectY2-rectY1);
+			context.setLineDash([0, 0]);
+		}
+	}
 
 
 	//Draw the channels
