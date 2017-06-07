@@ -1,0 +1,160 @@
+html {
+    background: #fff;
+}
+
+body {
+    background: #fff;
+    color: #545454;
+    font-family: "Futura";
+    line-height: 1.5;
+    padding-top: 5em;
+    margin: 0 auto;
+    max-width: 85%;
+    text-transform: uppercase;
+
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #222;
+    text-align: center;
+
+    
+}
+
+p {
+    text-align: center;
+    font-size: 16px;
+}
+
+p2 {
+    font-family: "Futura";
+    font-size: 14px;
+}
+
+button:focus {outline:0;}
+
+.buttonicons, .product {
+    width: 40px;
+    height: 40px;
+    float: left;
+    position: relative;
+}
+
+.button {
+    border: none;
+    color: black;
+    background-color: #6093e7;
+    text-align: center;
+    font-family: "Futura";
+    text-transform: uppercase;
+    display: inline-block;
+    float: right;
+    font-size: 14px;
+    width: auto;
+    padding:13px;
+    height: 52px;
+
+}
+
+.active {
+  background-color:#bcd7ea;
+  color: #000;
+}
+
+#sliders {
+    display: none;
+}
+
+#top {
+    position:relative;
+    
+}
+#left {
+    position:absolute;
+    top:21em; 
+    max-width:24%;
+    margin-left: .8em;
+    float: left;
+}
+
+#leftperm {
+    position:absolute;
+    top:17em; 
+    max-width:24%;
+    margin-left: .8em;
+    float: left;
+
+}
+
+#canvasDiv {
+    position:static;
+    margin-left:34%;
+    border:6px solid #333;
+    margin-top:-6px;
+}
+
+
+textarea, input, button { outline: none; }
+
+#grid_size_slider_box, #collection_region_size_box, #channel_width_box, #mixer_wavelength_box, #mixer_amplitude_box, #mixer_width_box, #pillar_width_box {
+    position:relative;
+    width:35px;
+    float:right;
+    padding-left:1em;
+}
+
+input[type='range'] {
+  box-sizing: border-box;
+  overflow: visible;
+  position: relative;
+  -webkit-appearance: none;
+  top: 50%;
+  left: 40%;
+  width: 16em;
+    padding-top:1em;
+  height: 3.25em;
+  border-radius: .25em;
+  transform: translate(-50%, -50%);
+  background: transparent;
+  /* Firefox & Chrome/ Opera need this, 
+     otherwise font-size is smaller */
+  font-size: 1em;
+  cursor: pointer;
+  /* wish I could style this asshole */
+}
+
+/* slider line */
+input[type='range']::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  border: solid 1px #d1d1d1;
+  width: 20em;
+  height: 0.75em;
+  border-radius: 0.375em;
+  box-shadow: inset 0 .125em .125em #aaa;
+  background: #e9e9e9;
+}
+
+
+/* Slider thumb */ 
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  margin-top: -.2em;
+  /* weird shit, Chrome */
+  box-sizing: border-box;
+  border: none;
+  border: solid 0.3125em #6093e7;
+  border-right-width: .5em;
+  border-left-width: .5em;
+  width: 1.1em;
+  height: 1.1em;
+  border-radius: .25em;
+  background: #6093e7 linear-gradient(90deg, #fefefe 50%, rgba(0, 0, 0, 0) 50%) 1px 50% content-box;
+  /* wtf is wrong with you, Chrome? */
+  background-size: .25em 100%;
+  background-size: 55% 55%;
+  /* this too :| */
+}
+
+
+

@@ -1,0 +1,277 @@
+<!doctype html>
+
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="stylesheet" type="text/css" href="main.css">
+
+	<title>ProtoFluidics</title>
+</head>
+    
+<body onload="refreshCanvas()">
+    <div id="top">
+		<h4> </h4> <!--TODO: what's the point of this header4?-->
+		<br>
+        
+<!-- Buttons -->
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+		<div id="drawing">
+			
+			<img src="images/whitelogotext.jpg" style="width:130px;height:51px;">
+
+		    <button class="button" onclick="alert('This feature is not enabled yet. Check back later!');"> Upgrade </button>
+
+		    <button class="button" onclick="download_handler()"> Save as JSON </button>
+		    
+		    <button class="button" onclick="upload_handler()">Upload JSON File </button>
+		    
+		    <button class="button" onclick="pillar_handler()">Pillar</button>
+
+		    <button class="button" onclick="mixer_handler()">Mixer</button>
+
+		    <button class="button" onclick="channel_handler()">Channel</button>
+		    
+		    <button class="button" onclick="collection_region_handler()">Collection Region</button>
+
+		    <button class="button" onclick="rect_region_handler()">Rectangular Region </button>
+
+		    <button class="button" onclick="array_handler()"> Array </button>
+		    <button class="button" onclick="reflection_handler()"> Reflect </button>
+
+		    <button class="button" onclick="resize_handler()"><img src="images/resize.png" width="20" height="20"></button>
+		
+		    <button class="button" onclick="measurement_handler()"><img src="images/measurement.png" width="20" height="20"></button>
+		    
+		    <button class="button" onclick="move_handler()"><img src="images/move.png" width="20" height="20"></button>
+		    
+		    <button class="button" onclick="box_select_handler()"><img src="images/boxselect.svg" width="20" height="20"></button>
+		    
+		    <button class="button" onclick="pointer_select_handler()"><img src="images/mousepointer.png" width="20" height="20"> </button>
+
+		    <button class="button" onclick="redo_handler()"><img src="images/redoarrow.svg" width="20" height="20"> </button>	
+		        
+		    <button class="button" onclick="undo_handler()"><img src="images/undoarrow.svg" width="20" height="20"> </button>
+		    
+			<button class="button" onclick="new_handler()"><img src="images/newfile.svg" width="20" height="20"> </button>
+		</div>
+	</div>
+	    
+	<script>
+	  $(document).ready(function() {
+	  $("#drawing button").click(function(e) {
+	    var isActive = $(this).hasClass('active');
+	    $('.active').removeClass('active');
+	    if (!isActive) {
+	      $(this).addClass('active');
+	    }
+	  });
+	});</script>
+
+	<!-- End Buttons -->
+	        
+	<!-- Permanent Divs on Left -->
+	<div id="leftperm">
+		<script src="./SliderFancy/js/index.js"></script>
+
+		<p2>Grid Size (microns)</p2>
+
+		<form>
+	  <input  for="amount" oninput="amount.value=rangeInput.value" 
+	       id="grid_size_slider" type="range" min="10" max="200" step="10" name="rangeInput" />
+	    <input oninput="rangeInput.value=amount.value" 
+	   id="grid_size_slider_box" type="text" value="20" name="amount" 
+	   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+		</form> 
+	</div>
+
+	<!-- End Permanent Divs on Left -->
+
+<!-- Start Side Bar TODO: LG:Use as tutorial of how to format code with indents-->
+<div id="left">
+<!-- Start Slider Bars-->
+<br>
+    <div id="sliders">
+        
+<div id="collection_sliders">
+    <p2>Collection Region Size</p2>
+<form>
+  <input  for="amount" oninput="amount.value=rangeInput.value" 
+       id="collection_region_size_slider" type="range" min="0" max="100" name="rangeInput" />
+
+  <input oninput="rangeInput.value=amount.value" 
+   id="collection_region_size_box" type="text" value="50" name="amount" 
+   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+
+  </form>
+</div>
+
+
+<div id="channel_sliders">
+    <p2>Channel Width</p2>
+<form>
+  <input  for="amount" oninput="amount.value=rangeInput.value" 
+       id="channel_width_slider" type="range" min="0" max="50" name="rangeInput" />
+
+  <input oninput="rangeInput.value=amount.value" 
+   id="channel_width_box" type="text" value="25" name="amount" 
+   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+
+  </form>
+</div>
+        
+<div id="mixer_sliders">
+
+    <p2>Mixer Type </p2>
+	<form id="mixer_type" action="">
+		<input type="radio" name="mixer_type" id="mixer_type2" value="rectangular" checked="checked">Rectangular<br>
+		<input type="radio" name="mixer_type" id="mixer_type3" value="sinusoidal">Sinusoidal<br>
+		<input type="radio" name="mixer_type" id="mixer_type1" value="jagged">Jagged<br>
+	</form>
+<br>
+	
+
+    <p2>Mixer Wavelength</p2>
+<form id="amount">
+  <input  for="amount" oninput="amount.value=rangeInput.value" 
+       id="mixer_wavelength_slider" type="range" min="0" max="10" name="rangeInput" />
+
+  <input oninput="rangeInput.value=amount.value" 
+   id="mixer_wavelength_box" type="text" value="5" name="amount" 
+   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+  </form>
+
+ <p2>Mixer Amplitude</p2>
+<form id="amount">
+  <input  for="amount" oninput="amount.value=rangeInput.value" 
+       id="mixer_amplitude_slider" type="range" min="10" max="100" name="rangeInput" />
+
+  <input oninput="rangeInput.value=amount.value" 
+   id="mixer_amplitude_box" type="text" value="5" name="amount" 
+   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+
+  </form>
+
+
+    <p2>Mixer Width</p2>
+<form id="amount">
+  <input  for="amount" oninput="amount.value=rangeInput.value" 
+       id="mixer_width_slider" type="range" min="0" max="50" name="rangeInput" />
+
+  <input oninput="rangeInput.value=amount.value" 
+   id="mixer_width_box" type="text" value="25" name="amount" 
+   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+
+  </form>
+
+</div>
+
+<div id="pillar_sliders">
+
+    <p2>Pillar Width</p2>
+<form>
+  <input  for="amount" oninput="amount.value=rangeInput.value" 
+       id="pillar_width_slider" type="range" min="0" max="10" name="rangeInput" />
+
+  <input oninput="rangeInput.value=amount.value" 
+   id="pillar_width_box" type="text" value="5" name="amount" 
+   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+
+  </form>
+</div>
+
+<div id="measurement">
+	<p2> Measurement</p2>
+	<input id="measurement_num" type="text" value="" name="amount" />
+
+</div>
+
+
+<div id="array">
+	<p2> Number of X Repetitions</p2>
+	<form id="array_x_num_reps">
+  		<input  for="amount" oninput="amount.value=rangeInput.value; array_change_handler()" 
+      		 id="x_num_reps_slider" type="range" min="2" max="10" name="rangeInput" />
+
+		  <input oninput="rangeInput.value=amount.value" 
+		   id="x_num_reps_box" type="text" value="2" name="amount" 
+		   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+  	</form>
+
+	<p2> X Distance Apart</p2>
+	<form id="array_x_dist">
+  		<input  for="amount" oninput="amount.value=rangeInput.value; array_change_handler()" 
+      		 id="x_dist_slider" type="range" min="0" max="1000" name="rangeInput" />
+
+		  <input oninput="rangeInput.value=amount.value" 
+		   id="x_dist_box" type="text" value="25" name="amount" 
+		   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+  	</form>
+	
+	<p2> Number of Y Repetitions</p2>
+	<form id="array_y_num_reps">
+  		<input  for="amount" oninput="amount.value=rangeInput.value; array_change_handler()"
+      		 id="y_num_reps_slider" type="range" min="2" max="10" name="rangeInput" />
+
+		  <input oninput="rangeInput.value=amount.value" 
+		   id="y_num_reps_box" type="text" value="2" name="amount" 
+		   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+  	</form>
+
+	<p2> Y Distance Apart</p2>
+	<form id="array_y_dist">
+  		<input  for="amount" oninput="amount.value=rangeInput.value; array_change_handler()"
+      		 id="y_dist_slider" type="range" min="0" max="1000" name="rangeInput" />
+
+		  <input oninput="rangeInput.value=amount.value" 
+		   id="y_dist_box" type="text" value="25" name="amount" 
+		   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+  	</form>
+
+	<button class="button" onclick="array_stamp_handler()">Apply</button>
+
+
+</div>
+
+<div id="reflect">
+</div>
+</div> 
+        
+<!-- End Slider Bars -->
+        </div>
+
+
+<!-- End Side Bar -->
+
+<!-- Start Canvas -->
+
+    <div id="canvasDiv"> 
+    </div>
+</body>
+    
+</html>
+
+<!-- Set up infrastructure functions -->
+
+<script src="math.js" type = "text/javascript"></script>
+<script src="handlers.js" type = "text/javascript"></script>
+<script src="classes.js" type = "text/javascript"></script> 
+<script src="draw.js" type = "text/javascript"></script>
+
+<!--Set up the 3 types of listeners-->
+
+<script src="createListeners.js" type = "text/javascript"></script>
+<script src="selectListeners.js" type="text/javascript"></script>
+<script src="operateListeners.js" type="text/javascript"></script>
+
+
+<!--
+	TODO: Ask LG why we need this script / if it's the same in the local modernizr.js
+	<script src="http://s.codepen.io/assets/libs/modernizr.js" type="text/javascript"></script>
+-->
+
+
+<!-- Start all scripts -->
+<script src="main.js" type = "text/javascript"></script>

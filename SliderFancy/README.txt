@@ -1,9 +1,0 @@
-A Pen created at CodePen.io. You can find this one at http://codepen.io/thebabydino/pen/RNjgZm.
-
- Goal: create a nicely styled cross-browser 1 element slider. Tested & works in Firefox 35, 38 (nightly), Chrome 40, 42 (canary)/ Opera 28, IE 11 on Windows 8. IE doesn't need the JS, Firefox and Chrome/ Opera rely on it a bit for styling. There's a bit of an extra in Chrome/ Opera with a nicely styled tooltip displaying progress. This is done using `/deep/` - careful, experimental stuff, [the spec has already changed](http://dev.w3.org/csswg/css-scoping-1/#deep-combinator), uncertain future in Chrome ([link #1](https://groups.google.com/a/chromium.org/forum/#!msg/blink-dev/hRw781MV3mE/pQHWrsKhmj0J), [link #2](https://code.google.com/p/chromium/issues/detail?id=433977)). Fallback for no JS: simply display the same shade of grey for the entire track, both before and after the thumb and no tooltip. 
-
-**Disclaimer because some people got the wrong idea: I did NOT design these sliders.** Whoever knows me is probably aware of the fact that I'm 100% technical and 0% artistic. Me trying to design something would result in visual vomit. I just googled "slider design" and tried to reproduce (as well as I could) the images that search found. Inspiration for this demo:
-
-![image](http://i.imgur.com/n73MW2a.jpg) 
-
-See also: [#1](http://codepen.io/thebabydino/pen/JoOomG/), [#2](http://codepen.io/thebabydino/pen/ogoXwG/), [#3](http://codepen.io/thebabydino/pen/PwOPMG/), [#4](http://codepen.io/thebabydino/pen/Bymjmm), [#5](http://codepen.io/thebabydino/pen/ogoxgZ), [#6](http://codepen.io/thebabydino/pen/YPEqVY), [#7](http://codepen.io/thebabydino/pen/gbXrNy/), [#8](http://codepen.io/thebabydino/pen/XJzppz/), [#9](http://codepen.io/thebabydino/pen/zxPNWj), [#10](http://codepen.io/thebabydino/pen/zxPZqe/), [#11](http://codepen.io/thebabydino/pen/azVJxO/), [#12](http://codepen.io/thebabydino/pen/OPOmbo/)

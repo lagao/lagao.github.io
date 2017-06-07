@@ -262,7 +262,8 @@ div.icon {
 	background-size: cover;
 }
 .overlay {
-	background-image: url(../img/overlay_light_diagonal.png);
+	/* background-image: url(../img/overlay_light_diagonal.png);
+	TODO: source picture?*/
 	position: absolute;
 	width: 100%;
 	height: 100%;
