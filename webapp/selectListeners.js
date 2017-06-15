@@ -3,8 +3,8 @@
 function pointerSelectHoverListener(e){
 
 	//Check if there are any nodes or edges within thresh of the mouse
-	nearestNode = findNearestNode(mouseX, mouseY);
-	nearestEdge = findNearestEdge(mouseX, mouseY);
+	nearestNode = findNearestNode(mouseX, mouseY, 0);
+	nearestEdge = findNearestEdge(mouseX, mouseY, 0);
 
 	//If you're near a node or edge, display a cell cursor
 	if(nearestNode != null || nearestEdge != null) {
@@ -14,15 +14,14 @@ function pointerSelectHoverListener(e){
 	else{
 		document.getElementById("canvasDiv").style.cursor = "auto";
 	}	
-	//Selected collection - change width of all edges to the width of the channel slider
-	document.getElementById('channel_sliders').style.display = 'block'; //Display channel slider again so you can change the width
 
 }
 
 function pointerSelectClickListener(e){
 	//Check if there are any nodes or edges within thresh of the mouse
-	nearestNode = findNearestNode(mouseX, mouseY);
-	nearestEdge = findNearestEdge(mouseX, mouseY);
+	nearestNode = findNearestNode(mouseX, mouseY, 0);
+	console.log(nearestNode);
+	nearestEdge = findNearestEdge(mouseX, mouseY, 0);
 
 	//console.log(selectedCollection);
 
@@ -57,43 +56,115 @@ function pointerSelectClickListener(e){
 	}
 	//Change width of selected collection
 
+	//Add or remove elements as necessary from the display ever time you change the collection
+	display_sliders(true);
+
 }
 
 //Box Select Listeners
-
+/*
 function boxSelectMouseDownListener(e){
-
-	if(cursorMode == CursorModeEnum.PLACE.CHANNEL){
-		cursorMode = CursorModeEnum.SELECT.POINTER;
-	}
-	else{
+	console.log("mouse down listener");
+	//if(cursorMode == CursorModeEnum.SELECT.BOX){
+	//	cursorMode = CursorModeEnum.SELECT.POINTER;
+	//} else{
 		anchorMouseX = mouseX;
 		anchorMouseY = mouseY;
 		anchorMouseX2 = -1;
 		anchorMouseY2 = -1;
-	}
-}
-
-function boxSelectMouseMoveListener(e){
+		console.log(anchorMouseX);
+		console.log(anchorMouseY);
+		console.log(anchorMouseX2);
+		console.log(anchorMouseY2);
+		refreshCanvas();
+	//}
+}*/
+/*
+function boxSelectMouseDragListener(e){
+	console.log("mouse drag listener");
 
 	//If there's no box selection started, don't do anything
 	if(anchorMouseX == -1){
 		return;
 	}
-
+	console.log(anchorMouseX);
+	console.log(anchorMouseY);
+	console.log(anchorMouseX2);
+	console.log(anchorMouseY2);
 	//If a box selection's started, but not finished, use mouse's X & Y
-	if(anchorMouseX2 == -1){
+	if(anchorMouseX !=1 && anchorMouseX2 == -1){
 		selectedCollection = findBoxSelection(anchorMouseX, anchorMouseY, mouseX, mouseY);
+		//Add or remove elements as necessary from the display ever time you change the collection
+		display_sliders(true);
 	}
 	//If there's a finished box selection, use anchorMouse's X & Y
 	else{
 		selectedCollection = findBoxSelection(anchorMouseX, anchorMouseY, anchorMouseX2, anchorMouseY2);
+		//Add or remove elements as necessary from the display ever time you change the collection
+		display_sliders(true);
 	}
+	refreshCanvas();
+
+}*/
+
+/*
+function boxSelectMouseUpListener(e){
+	console.log("mouse up listener");
+	console.log(cursorMode);
+	//cursorMode = CursorModeEnum.SELECT.POINTER;
+	anchorMouseY2 = mouseY;
+	anchorMouseX2 = mouseX;
+	refreshCanvas();
+
+	
+}*/
+
+
+function boxSelectMouseDownListener(e){
+	console.log("mouse down listener");
+	mouseX = e.pageX - canvas.offsetLeft;
+	mouseY = e.pageY - canvas.offsetTop;
+	boxMouseX = mouseX;
+	boxMouseY = mouseY;
+	boxMouseX2 = -1;
+	boxMouseY2 = -1;
+	refreshCanvas(); //command to update the function
+}
+
+function boxSelectMouseDragListener(e){
+	console.log("mouse drag listener");
+	if (boxMouseX == -1) return;
+
+	mouseX = e.pageX - canvas.offsetLeft;
+	mouseY = e.pageY - canvas.offsetTop;
+
+	//If a box selection's started, but not finished, use mouse's X & Y
+	if(boxMouseX !=1 && boxMouseX2 == -1){
+		
+	}
+	//If there's a finished box selection, use anchorMouse's X & Y
+	else{
+		
+	}
+	
+	selectedCollection = findBoxSelection(boxMouseX, boxMouseY, boxMouseX2, boxMouseY2);
+	//Add or remove elements as necessary from the display ever time you change the collection
+	display_sliders(true);
+	refreshCanvas();
 
 }
 
 function boxSelectMouseUpListener(e){
-	//cursorMode = CursorModeEnum.SELECT.POINTER;
-	anchorMouseY2 = mouseY;
-	anchorMouseX2 = mouseX;
+	mouseX = e.pageX - canvas.offsetLeft;
+	mouseY = e.pageY - canvas.offsetTop;
+
+	boxMouseX2 = mouseX;
+	boxMouseY2 = mouseY;
+
+	refreshCanvas();
+
+
+
 }
+
+

@@ -16,8 +16,8 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
     color: #222;
-    text-align: center;
-
+    text-align: left;
+    
     
 }
 
@@ -51,14 +51,62 @@ button:focus {outline:0;}
     float: right;
     font-size: 14px;
     width: auto;
-    padding:13px;
+    padding:10px;
     height: 52px;
+}
 
+.button:hover {
+    background-image:none !important;
+    background-color:#bcd7ea !important;
 }
 
 .active {
   background-color:#bcd7ea;
   color: #000;
+}
+
+
+.buttonUndoRedo {
+    border: none;
+    color: black;
+    background-color: #6093e7;
+    text-align: center;
+    font-family: "Futura";
+    text-transform: uppercase;
+    display: inline-block;
+    float: right;
+    font-size: 14px;
+    width: auto;
+    padding:10px;
+    height: 52px;
+}
+
+.buttonUndoRedo:hover {
+    background-image:none !important;
+    background-color:#bcd7ea !important;
+}
+
+
+button2:focus {outline:0;}
+
+.button2, .submit {
+    border: none;
+    color: black;
+    background-color: #6093e7;
+    text-align: center;
+    font-family: "Futura";
+    text-transform: uppercase;
+    display: inline-block;
+    font-size: 14px;
+    float: right;
+    width: auto;
+    padding: 15px;
+
+}
+
+.button2:hover {
+    background-image:none !important;
+    background-color:#bcd7ea !important;
 }
 
 #sliders {
@@ -71,7 +119,7 @@ button:focus {outline:0;}
 }
 #left {
     position:absolute;
-    top:21em; 
+    top:15em; 
     max-width:24%;
     margin-left: .8em;
     float: left;
@@ -79,7 +127,7 @@ button:focus {outline:0;}
 
 #leftperm {
     position:absolute;
-    top:17em; 
+    top:13em; 
     max-width:24%;
     margin-left: .8em;
     float: left;
@@ -96,7 +144,7 @@ button:focus {outline:0;}
 
 textarea, input, button { outline: none; }
 
-#grid_size_slider_box, #collection_region_size_box, #channel_width_box, #mixer_wavelength_box, #mixer_amplitude_box, #mixer_width_box, #pillar_width_box {
+#grid_size_slider_box, #collection_region_size_box, #channel_width_box, #mixer_wavelength_box, #mixer_amplitude_box, #mixer_width_box, #pillar_width_box, #x_num_reps_box, #x_dist_box, #y_num_reps_box, #y_dist_box {
     position:relative;
     width:35px;
     float:right;
@@ -156,5 +204,114 @@ input[type='range']::-webkit-slider-thumb {
   /* this too :| */
 }
 
+.dropbtn {
+    border: none;
+    color: black;
+    min-width: 160px;
+    background-color: #6093e7;
+    text-align: center;
+    font-family: "Futura";
+    text-transform: uppercase;
+    display: inline-block;
+    font-size: 14px;
+    padding:13px;
+    height: 52px;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    float: right;
+    display: inline-block;
+    padding-bottom: 20px;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    width: 160px;
+}
+
+/* Dropdown buttons */
+.buttondrop {
+    border: none;
+    color: black;
+    background-color: #6093e7;
+    text-align: center;
+    font-family: "Futura";
+    text-transform: uppercase;
+    display: inline-block;
+    float: right;
+    font-size: 14px;
+    width: 160px;
+    height: 52px;
+
+}
+
+/* Make the drop down buttons change color when you hover over them*/
+
+.buttondrop:hover {
+    background-color: #bcd7ea;
+}
 
 
+/* Dropdown buttons for save, which don't stay on*/
+.buttondrop2 {
+    border: none;
+    color: black;
+    background-color: #6093e7;
+    text-align: center;
+    font-family: "Futura";
+    text-transform: uppercase;
+    display: inline-block;
+    float: right;
+    font-size: 14px;
+    width: 160px;
+    height: 52px;
+
+}
+
+/* Make the drop down buttons change color when you hover over them*/
+
+.buttondrop2:hover {
+    background-color: #bcd7ea;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #bcd7ea}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+    background-color: #bcd7ea;
+}
+
+.buttondrop .active{
+	background-color: #bcd7ea;
+}
+
+.dropdown .active{
+	background-color: #bcd7ea;	
+}
+
+.dropbtn .active{
+	background-color: #bcd7ea;
+}
+
+.dropdown-content .active{
+	background-color: #bcd7ea;
+}

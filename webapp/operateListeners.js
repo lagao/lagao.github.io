@@ -36,10 +36,13 @@ function moveCollection(coll, e, isCutPaste){
 
 	for(var i = 0; i<coll.channel.nodes.length; i++){
 	//TODO: offer (but don't force) snap to grid?
-		newColl.channel.nodes[i] = new Node(0, 0, 0);
-	        newColl.channel.nodes[i].x = coll.channel.nodes[i].x + (mouseX - anchorMouseX);
-	        newColl.channel.nodes[i].y = coll.channel.nodes[i].y + (mouseY - anchorMouseY);
-		newColl.channel.nodes[i].r = coll.channel.nodes[i].r;
+	        var x = coll.channel.nodes[i].x + (mouseX - anchorMouseX);
+	        var y = coll.channel.nodes[i].y + (mouseY - anchorMouseY);
+		var r = coll.channel.nodes[i].r;
+		var type = coll.channel.nodes[i].type;
+		var width = coll.channel.nodes[i].width;
+		var height = coll.channel.nodes[i].height;
+		newColl.channel.nodes[i] = new Node(x, y, r, type, width, height);
 		//Will have to add type as well	
 	}
 
@@ -66,18 +69,18 @@ function moveDragListener(e){
 	refreshCanvas();
 }
 
-var measureX1 = -1; //To start
-var measureY1 = -1; //To start
-var measureX2 = -1;
-var measureY2 = -1;
+var reflectX1 = -1; //To start
+var reflectY1 = -1; //To start
+var reflectX2 = -1;
+var reflectY2 = -1;
 
 //TODO: Get it to work on boxes
-function measureMouseDownListener(e){
+function reflectMouseDownListener(e){
 	console.log("mouse down");
-	measureX1 = mouseX;
-	measureY1 = mouseY;
-	measureX2 = -1;
-	measureY2 = -1;
+	reflectX1 = mouseX;
+	reflectY1 = mouseY;
+	reflectX2 = -1;
+	reflectY2 = -1;
 }
 
 function resizeMouseDownListener(e){
@@ -132,42 +135,30 @@ function resizeMouseUpListener(e){
 	
 }
 
-function measureMouseUpListener(e){
+
+function reflectMouseUpListener(e){
 	console.log("mouse up");
-	measureX2 = mouseX;
-	measureY2 = mouseY;
-	if (measureX1 < 0 || measureY1 < 0){
-		console.log("error, mouse down not measured");
-	} else {
-		var u = findNearestNode(measureX1, measureY1, thresh); 
-		var v = findNearestNode(measureX2, measureY2, thresh); 
-		var ans = "";
-		if (u == null) { //Nothing selected
-			console.log("No node selected!");
-			ans = "";
-		} else if (v == null || u.equals(v)){ 	//If the nodes are the same, give radius of node
-			console.log(u.r);
-			ans = u.r;			
-		} else { //Else display distance between two nodes, whether or not there is an edge between them
-			console.log(Math.sqrt(dist2(u, v))); 
-			ans = Math.sqrt(dist2(u, v));
-		}
-	}
-	//Display
-	document.getElementById("measurement_num").value = ans;
+	reflectX2 = mouseX;
+	reflectY2 = mouseY;
 	
-	
-	
-	//Clear
-	measureX1 = -1;
-	measureY1 = -1;	
-	measureX2 = -1;
-	measureY2 = -1;
+}
+
+function rotateMouseDownListener(e){
+	rotateX = mouseX;
+	rotateY = mouseY;
 }
 
 function deleteListener(coll, selectedColl, e){
+	console.log("Collection before");
+	console.log(coll);
+	console.log("Selected collection before");		
+	console.log(selectedColl);
 
 	coll.deleteCollection(selectedColl);
+	//coll.channel.removeChannel(selectedColl.channel);
+
+	console.log("Collection after");
+	console.log(coll);
 	selectedColl = new Collection();
 
 	return;

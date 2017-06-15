@@ -15,8 +15,9 @@ var CursorModeEnum = {
 
 	OPERATE: {
 		MOVE: 'OPERATE.MOVE',
-		MEASURE: 'OPERATE.MEASURE',
-		RESIZE: 'OPERATE.RESIZE'
+		REFLECT: 'OPERATE.REFLECT', 
+		ROTATE: 'OPERATE.ROTATE', 
+		ARRAY: 'OPERATE.ARRAY'
 	}
 };
 
@@ -30,7 +31,15 @@ var arrayPreviewCollection = new Collection(); //does not move with selection
 
 // VARIABLES //
 
+var rotateX = -1;
+var rotateY = -1;
+
+var currZoom = 1.00; //Track the current zoom level
+
+var zoomIncrement = 0.10; // Amount the zoom changes per scroll
+
 var thresh = 20; //Beneath this threshold points will snap to earlier points on a grid
+
 var gridSize = 20;
 
 //Variables for devices currently in use
@@ -65,9 +74,13 @@ var snappedMouseY = 0;
 
 var anchorMouseX = -1;
 var anchorMouseY = -1;
-
 var anchorMouseX2 = -1;
 var anchorMouseY2 = -1;
+
+var boxMouseX = -1;
+var boxMouseY = -1;
+var boxMouseX2 = -1;
+var boxMouseY2 = -1;
 
 var isCutPaste = false; //starts out to not cut and paste
 
@@ -112,32 +125,60 @@ canvas.addEventListener('mouseleave', mouseLeaveHandler, false);
 canvas.addEventListener('drag', mouseDragHandler, false);
 canvas.addEventListener('mousewheel', scrollHandler, false);
 
-// ADD VERTEX //
-// TODO: remove in favor of addNode? //
-function addVertex(x, y) {
+//Ensure that data is not deleted
 
-	//Keep track of the radius that your node should have (1 typically, larger if collection region)		
-	var rad = 1;
-	if (cursorMode == CursorModeEnum.PLACE.VERTEX){
-		rad = document.getElementById("collection_region_size_box").value;
+//Menu button drawing
+var saveBtn = document.getElementById("save-btn");
+var collectBtn = document.getElementById("collection-btn");
+var transformBtn = document.getElementById("transformation-btn");
+var jsonBtn = document.getElementById("json-btn");
+var pngBtn = document.getElementById("png-btn");
+var reflectBtn = document.getElementById("reflect-btn");
+var rotateBtn = document.getElementById("rotate-btn");
+var arrayBtn = document.getElementById("array-btn");
+
+function menu_button_changer(button, on){
+	var saveBtn = document.getElementById("save-btn");
+	var collectBtn = document.getElementById("collection-btn");
+	var transformBtn = document.getElementById("transformation-btn");
+
+	saveBtn.style.background = "#6093e7";
+	collectBtn.style.background = "#6093e7";
+	transformBtn.style.background = "#6093e7";
+
+	if (on){
+		button.style.background = "#bcd7ea";
+	} else {
+		button.style.background = "#6093e7";
 	}
 
+}
+
+
+// ADD VERTEX //
+// TODO: remove in favor of addNode? //
+function addVertex(x, y, r, type, w, h) {
+	console.log("add vertex");
+
 	//Keep track of the current node within threshold distance
-	var currNodeIndex = collection.channel.nodes.indexOf(findNearestNode(x, y, rad));
+	var currNodeIndex = collection.channel.nodes.indexOf(findNearestNode(x, y, r));
+	console.log("nearest node is");
+	console.log(currNodeIndex);
 
 	//If there isn't one, your currIndex is one more than curr # of nodes
 	//And you should add a new node to your graph
 	if(currNodeIndex == -1 || collection.channel.edges[prevNodeIndex] == null || collection.channel.edges[currNodeIndex] == null){
 		currNodeIndex = collection.channel.nodes.length;
-		collection.channel.nodes.push(new Node(x, y, rad)); //Adds node to graph
+		collection.channel.nodes.push(new Node(x, y, r, type, w, h)); //Adds node to graph
 		collection.channel.edges.push([]); //Create empty list of edges to be filled by new node
 	}
 
 	//If you're not at the start of a new channel and the previous node was not deleted)
 	//add an edge back to the previous node
 	if (!firstInChannel){
+		console.log("not first in channel");
 			if (cursorMode == CursorModeEnum.PLACE.VERTEX) {
-				collection.channel.nodes[currNodeIndex].r = rad;
+				collection.channel.nodes[currNodeIndex].r = r;
 			} else {
 				
 				if (cursorMode == CursorModeEnum.PLACE.CHANNEL) {
@@ -145,7 +186,7 @@ function addVertex(x, y) {
 					var weight = parseInt(document.getElementById("channel_width_box").value);
 
 					//Find the length of the channel
-					var newChannelLength = collection.channel.distBetweenNodes(prevNodeIndex, currNodeIndex);
+					//var newChannelLength = collection.channel.distBetweenNodes(prevNodeIndex, currNodeIndex);
 					//console.log(newChannelLength);
 
 					collection.channel.edges[prevNodeIndex].push(new Edge(prevNodeIndex, currNodeIndex, weight, 0)); //weight 1, type 0, default for now

@@ -20,42 +20,73 @@
 
 		<div id="drawing">
 			
-			<img src="images/whitelogotext.jpg" style="width:130px;height:51px;">
+			<img src="images/whitelogotext.jpg" style="width:130px;height:51px;" hspace="10">
 
-		    <button class="button" onclick="alert('This feature is not enabled yet. Check back later!');"> Upgrade </button>
-
-		    <button class="button" onclick="download_handler()"> Save as JSON </button>
+		   <!--- <button class="button" onclick="download_png_handler()"> Save as PNG </button>
 		    
-		    <button class="button" onclick="upload_handler()">Upload JSON File </button>
+		    <button class="button" onclick="download_handler()"> Save as JSON </button>-->
 		    
-		    <button class="button" onclick="pillar_handler()">Pillar</button>
-
-		    <button class="button" onclick="mixer_handler()">Mixer</button>
-
-		    <button class="button" onclick="channel_handler()">Channel</button>
+		    <button class="button" onclick="upload_handler(); menu_button_changer(saveBtn, false)">Upload JSON File </button>
 		    
-		    <button class="button" onclick="collection_region_handler()">Collection Region</button>
+		    <!---<button class="button" onclick="pillar_handler()">Pillar</button>-->
 
-		    <button class="button" onclick="rect_region_handler()">Rectangular Region </button>
 
-		    <button class="button" onclick="array_handler()"> Array </button>
+		    
+		   <!--- <button class="button" onclick="collection_region_handler()">Collection Region</button>-->
+            
+	
+            <div class="dropdown">
+                <button class="dropbtn" id="save-btn">Save As</button>
+                <div class="dropdown-content">
+                    <button class="buttondrop2" id="json-btn" onclick="download_handler(); menu_button_changer(saveBtn, false)" >JSON (Reloadable)</button>
+                    <button class="buttondrop2" id="png-btn" onclick="download_png_handler(); menu_button_changer(saveBtn, false) " >PNG (Image)</button>
+                </div>
+            </div> <!----These shouldn't stay highlighted->
+  
+		    <!---<button class="button" onclick="rect_region_handler()">Rectangular Region </button>-->
+            
+            <div class="dropdown">
+                <button class="dropbtn" id="collection-btn">Collection Regions</button>
+                <div class="dropdown-content">
+                    <button class="buttondrop" id="rect-btn" onclick="var on = rect_region_handler(); menu_button_changer(collectBtn, on)" >Rectangular</button>
+                    <button class="buttondrop" id="circ-btn" onclick="var on = collection_region_handler(); menu_button_changer(collectBtn, on)" >Circular</button>
+                </div>
+            </div>
+            
+            <button class="button" onclick="mixer_handler(); menu_button_changer(saveBtn, false)">Mixer</button>
+
+		    <button class="button" onclick="channel_handler();menu_button_changer(saveBtn, false)">Channel</button>
+            
+	       <div class="dropdown">
+                <button class="dropbtn" id="transformation-btn">Transformations</button>
+                <div class="dropdown-content">
+                    <button class="buttondrop" id="array-btn" onclick="var on = array_handler(); menu_button_changer(transformBtn, on)" >Array</button>
+                    <button class="buttondrop" id="reflect-btn" onclick="var on = reflection_handler(); menu_button_changer(transformBtn, on)" >Reflect</button>
+                    <button class="buttondrop" id="rotate-btn" onclick="var on = rotation_handler(); menu_button_changer(transformBtn, on)" >Rotate</button>
+                </div>
+            </div>
+            
+        
+        
+		    <!---<button class="button" onclick="array_handler()"> Array </button>
 		    <button class="button" onclick="reflection_handler()"> Reflect </button>
+		    <button class="button" onclick="rotation_handler()"> Rotate </button>-->
 
-		    <button class="button" onclick="resize_handler()"><img src="images/resize.png" width="20" height="20"></button>
+		    <!--<button class="button" onclick="resize_handler()"><img src="images/resize.png" width="20" height="20"></button>-->
 		
-		    <button class="button" onclick="measurement_handler()"><img src="images/measurement.png" width="20" height="20"></button>
+		    <!---<button class="button" onclick="measurement_handler()"><img src="images/measurement.png" width="20" height="20"></button>-->
 		    
-		    <button class="button" onclick="move_handler()"><img src="images/move.png" width="20" height="20"></button>
+		    <button class="button" onclick="move_handler(); menu_button_changer(saveBtn, false)"><img src="images/move.png" width="20" height="20"></button>
 		    
-		    <button class="button" onclick="box_select_handler()"><img src="images/boxselect.svg" width="20" height="20"></button>
+		    <button class="button" onclick="box_select_handler();menu_button_changer(saveBtn, false)"><img src="images/boxselect.svg" width="20" height="20"></button>
 		    
-		    <button class="button" onclick="pointer_select_handler()"><img src="images/mousepointer.png" width="20" height="20"> </button>
+		    <button class="button" onclick="pointer_select_handler();menu_button_changer(saveBtn, false)"><img src="images/mousepointer.png" width="20" height="20"> </button>
 
-		    <button class="button" onclick="redo_handler()"><img src="images/redoarrow.svg" width="20" height="20"> </button>	
+		    <button class="button" onclick="redo_handler();menu_button_changer(saveBtn, false)"><img src="images/redoarrow.svg" width="20" height="20"> </button>	
 		        
-		    <button class="button" onclick="undo_handler()"><img src="images/undoarrow.svg" width="20" height="20"> </button>
+		    <button class="button" onclick="undo_handler();menu_button_changer(saveBtn, false)"><img src="images/undoarrow.svg" width="20" height="20"> </button>
 		    
-			<button class="button" onclick="new_handler()"><img src="images/newfile.svg" width="20" height="20"> </button>
+			<button class="button" onclick="new_handler();menu_button_changer(saveBtn, false)"><img src="images/newfile.svg" width="20" height="20"> </button>
 		</div>
 	</div>
 	    
@@ -74,13 +105,9 @@
 	        
 	<!-- Permanent Divs on Left -->
 	<div id="leftperm">
-		<script src="./SliderFancy/js/index.js"></script>
-
+		<script src="./SliderFancy/js/index.js"></script>        
 		<p2>Grid Size (microns)</p2>
-
 		<form>
-	  <input  for="amount" oninput="amount.value=rangeInput.value" 
-	       id="grid_size_slider" type="range" min="10" max="200" step="10" name="rangeInput" />
 	    <input oninput="rangeInput.value=amount.value" 
 	   id="grid_size_slider_box" type="text" value="20" name="amount" 
 	   for="rangeInput"  oninput="rangeInput.value=amount.value" />
@@ -96,7 +123,8 @@
     <div id="sliders">
         
 <div id="collection_sliders">
-    <p2>Collection Region Size</p2>
+    <h3>Circular Collection Region</h3>
+    <p2>Size</p2>
 <form>
   <input  for="amount" oninput="amount.value=rangeInput.value" 
        id="collection_region_size_slider" type="range" min="0" max="100" name="rangeInput" />
@@ -107,10 +135,58 @@
 
   </form>
 </div>
+<div id="collection_fix">
+	<button class="fix" onclick="collection_fix_handler()">Fix</button>
+</div>
+
+
+<div id="rect_sliders">
+   
+    <h3>Rectangular Collection Region</h3>
+    <br>
+    
+	<p2>Width </p2>
+    <br>
+
+    
+	<form>
+  <input  for="amount" oninput="amount.value=rangeInput.value" 
+       id="rect_collection_region_width_slider" type="range" min="0" max="100" name="rangeInput" />
+
+  <input oninput="rangeInput.value=amount.value" 
+   id="rect_collection_region_width_box" type="text" value="50" name="amount" 
+   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+
+  </form>
+
+    
+	<p2>Height </p2>
+<form>
+  <input  for="amount" oninput="amount.value=rangeInput.value" 
+       id="rect_collection_region_height_slider" type="range" min="0" max="100" name="rangeInput" />
+
+  <input oninput="rangeInput.value=amount.value" 
+   id="rect_collection_region_height_box" type="text" value="50" name="amount" 
+   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+
+  </form>
+</div>
+
+<div id="rect_fix">
+	<button class="fix" onclick="rect_fix_handler()">Fix</button>
+</div>
+
+
 
 
 <div id="channel_sliders">
-    <p2>Channel Width</p2>
+    <h3>Channel</h3>
+    <div id="channel_fix">
+	<button class="fix" onclick="channel_fix_handler()">Fix</button>
+</div>
+    
+    <p2>Width</p2>
+    
 <form>
   <input  for="amount" oninput="amount.value=rangeInput.value" 
        id="channel_width_slider" type="range" min="0" max="50" name="rangeInput" />
@@ -121,10 +197,33 @@
 
   </form>
 </div>
+
+
+<br>
+        
+<div id="channel_length_sliders">
+    <div id="channel_length_fix">
+	<button class="fix" onclick="channel_length_fix_handler()">Fix</button>
+</div>
+    
+    <p2>Length</p2>
+<form>
+  <input  for="amount" oninput="amount.value=rangeInput.value" 
+       id="channel_length_slider" type="range" min="0" max="50" name="rangeInput" />
+
+  <input oninput="rangeInput.value=amount.value" 
+   id="channel_length_box" type="text" value="25" name="amount" 
+   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+
+  </form>
+</div>
+
+
         
 <div id="mixer_sliders">
 
-    <p2>Mixer Type </p2>
+    <h3>Mixer</h3>
+    <p2>Type </p2>
 	<form id="mixer_type" action="">
 		<input type="radio" name="mixer_type" id="mixer_type2" value="rectangular" checked="checked">Rectangular<br>
 		<input type="radio" name="mixer_type" id="mixer_type3" value="sinusoidal">Sinusoidal<br>
@@ -133,39 +232,43 @@
 <br>
 	
 
-    <p2>Mixer Wavelength</p2>
+    <p2>Wavelength</p2>
 <form id="amount">
   <input  for="amount" oninput="amount.value=rangeInput.value" 
        id="mixer_wavelength_slider" type="range" min="0" max="10" name="rangeInput" />
 
   <input oninput="rangeInput.value=amount.value" 
-   id="mixer_wavelength_box" type="text" value="5" name="amount" 
+   id="mixer_wavelength_box" type="text" value="10" name="amount" 
    for="rangeInput"  oninput="rangeInput.value=amount.value" />
   </form>
 
- <p2>Mixer Amplitude</p2>
+ <p2>Amplitude</p2>
 <form id="amount">
   <input  for="amount" oninput="amount.value=rangeInput.value" 
        id="mixer_amplitude_slider" type="range" min="10" max="100" name="rangeInput" />
 
   <input oninput="rangeInput.value=amount.value" 
-   id="mixer_amplitude_box" type="text" value="5" name="amount" 
+   id="mixer_amplitude_box" type="text" value="10" name="amount" 
    for="rangeInput"  oninput="rangeInput.value=amount.value" />
 
   </form>
 
 
-    <p2>Mixer Width</p2>
+    <p2>Width</p2>
 <form id="amount">
   <input  for="amount" oninput="amount.value=rangeInput.value" 
        id="mixer_width_slider" type="range" min="0" max="50" name="rangeInput" />
 
   <input oninput="rangeInput.value=amount.value" 
-   id="mixer_width_box" type="text" value="25" name="amount" 
+   id="mixer_width_box" type="text" value="5" name="amount" 
    for="rangeInput"  oninput="rangeInput.value=amount.value" />
 
   </form>
 
+</div>
+
+<div id="mixer_fix">
+	<button class="fix" onclick="mixer_fix_handler()">Fix</button>
 </div>
 
 <div id="pillar_sliders">
@@ -182,61 +285,85 @@
   </form>
 </div>
 
-<div id="measurement">
-	<p2> Measurement</p2>
-	<input id="measurement_num" type="text" value="" name="amount" />
+<div id="pillar_fix">
+	<button class="fix" onclick="pillar_fix_handler()">Fix</button>
+</div>
 
+<div id="reflection_div">
+    <h3>Reflect</h3>
+	<p2> Draw a line to reflect across. </p2>
+	<button class="submit" onclick="reflection_fix_handler()"> Fix reflection </button>
+</div>
+
+<div id="rotation_div">
+	<p2> Draw a point about which to rotate. </p2>	
+	<br>
+	<p2> Angle counterclockwise (degrees)</p2>
+	<form>
+		  <input id="angle" type="text" value="0" name="angle"  />
+  	</form>
+	<button class="button2" onclick="rotation_fix_handler()"> Fix rotation </button>
 </div>
 
 
 <div id="array">
+    <h3>Array</h3>
 	<p2> Number of X Repetitions</p2>
 	<form id="array_x_num_reps">
-  		<input  for="amount" oninput="amount.value=rangeInput.value; array_change_handler()" 
+        <input  for="amount" oninput="amount.value=rangeInput.value; array_change_handler()" 
       		 id="x_num_reps_slider" type="range" min="2" max="10" name="rangeInput" />
-
-		  <input oninput="rangeInput.value=amount.value" 
+        
+        <input oninput="rangeInput.value=amount.value" 
 		   id="x_num_reps_box" type="text" value="2" name="amount" 
 		   for="rangeInput"  oninput="rangeInput.value=amount.value" />
   	</form>
+    
 
 	<p2> X Distance Apart</p2>
 	<form id="array_x_dist">
-  		<input  for="amount" oninput="amount.value=rangeInput.value; array_change_handler()" 
+  		 <input  for="amount" oninput="amount.value=rangeInput.value; array_change_handler()" 
       		 id="x_dist_slider" type="range" min="0" max="1000" name="rangeInput" />
-
-		  <input oninput="rangeInput.value=amount.value" 
+        
+        <input oninput="rangeInput.value=amount.value" 
 		   id="x_dist_box" type="text" value="25" name="amount" 
 		   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+        
   	</form>
 	
 	<p2> Number of Y Repetitions</p2>
 	<form id="array_y_num_reps">
   		<input  for="amount" oninput="amount.value=rangeInput.value; array_change_handler()"
       		 id="y_num_reps_slider" type="range" min="2" max="10" name="rangeInput" />
-
-		  <input oninput="rangeInput.value=amount.value" 
+        
+        <input oninput="rangeInput.value=amount.value" 
 		   id="y_num_reps_box" type="text" value="2" name="amount" 
 		   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+
   	</form>
 
 	<p2> Y Distance Apart</p2>
 	<form id="array_y_dist">
   		<input  for="amount" oninput="amount.value=rangeInput.value; array_change_handler()"
       		 id="y_dist_slider" type="range" min="0" max="1000" name="rangeInput" />
-
-		  <input oninput="rangeInput.value=amount.value" 
+        
+        <input oninput="rangeInput.value=amount.value" 
 		   id="y_dist_box" type="text" value="25" name="amount" 
 		   for="rangeInput"  oninput="rangeInput.value=amount.value" />
+        
   	</form>
 
-	<button class="button" onclick="array_stamp_handler()">Apply</button>
+	<button class="button2" onclick="array_stamp_handler()">Apply</button>
 
 
 </div>
 
 <div id="reflect">
 </div>
+
+<div id="download_png">
+  <p> Right Click to Save Image </p>
+  <div>  <img id="canvasImg" alt="Right click to save" style="height:100px;width:100px;position:relative;top:50%;left:50%" border="5"> </div>
+  </div>
 </div> 
         
 <!-- End Slider Bars -->
@@ -265,7 +392,6 @@
 <script src="createListeners.js" type = "text/javascript"></script>
 <script src="selectListeners.js" type="text/javascript"></script>
 <script src="operateListeners.js" type="text/javascript"></script>
-
 
 <!--
 	TODO: Ask LG why we need this script / if it's the same in the local modernizr.js

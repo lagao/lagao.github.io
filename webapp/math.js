@@ -84,24 +84,27 @@ function findNearestNode(x, y, radius){ //the radius of the node you are adding,
 
 	var nearestNodeDist = 5000; //larger than achievable in canvas
 	var nearestNodeRadius = 0;
+	var nearestNode = null;
 
 	//Iterates through the graph's nodes
 	for (var i = 0; i < collection.channel.nodes.length; i++){
 		currNode = collection.channel.nodes[i];
 		if (currNode == null) continue;
 		currNodeDist = dist(x, y, currNode.x, currNode.y);
-	
 		if(currNodeDist <= nearestNodeDist){
 			nearestNodeDist = currNodeDist;
 			nearestNode = currNode;
 			nearestNodeRadius = currNode.r;
-
 		}
 	}
 
 
-	var radiusSum = parseInt(nearestNodeRadius) + parseInt(radius);
-	if (nearestNodeDist < thresh || nearestNodeDist < radiusSum){
+	var radiusSum = parseInt(nearestNodeRadius) + parseInt(radius);	
+	if (nearestNode == null) return null;
+	if (nearestNodeDist < thresh || 
+		(nearestNode.type == 0 && nearestNodeDist < radiusSum + thresh) || 
+		(nearestNode.type == 1 && nearestNode.x - nearestNode.w/2 - thresh < x && x < nearestNode.x  + nearestNode.w/2 + thresh && 
+		nearestNode.y - nearestNode.h/2 - thresh < y && y < nearestNode.y + nearestNode.h/2 + thresh)){
 		return nearestNode;	
 	}
 	else{

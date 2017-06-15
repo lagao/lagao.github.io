@@ -63,9 +63,11 @@ a {
 ******************************************************************/								
 a {
 	font-family: "Open Sans", Verdana, Arial, sans-serif;
-	text-decoration: none;
-	font-size: 8pt;
-	color: #616161;
+    color: #616161;
+    font-size: 20px;
+	text-align: center;
+	margin: 50px auto;
+	font-weight: 400;
 }
 a:hover {
 	color: #6093e7;
@@ -136,6 +138,7 @@ h6 {
 .clear {
 	clear: both;
 }
+
 
 /******************************************************************
 	Colors
@@ -209,7 +212,7 @@ div.pagetitle h1 {
 	text-align: center;
 }
 p.main {
-	font-size: 15px;
+	font-size: 20px;
 	text-align: center;
 	margin: 50px auto;
 	font-weight: 400;

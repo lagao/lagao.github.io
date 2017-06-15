@@ -9,6 +9,7 @@ function drawGrid(canvas, gridSize){
 }
 
 function drawChannel(channel, color){
+
 	if (channel.nodes.length == 0) return;
 	context.strokeStyle = color;
   	context.lineJoin = "round";
@@ -23,24 +24,21 @@ function drawChannel(channel, color){
 
 		if (node.type == 1) {
 			//It is a rectangular collection region
-			context.strokeStyle = "#aaaaaa";
+			context.fillStyle = color;
 			context.lineWidth = 2;
 			//console.log("rectangle to write");
 			//console.log(rectX1);
 			//console.log(rectY1);
 			//console.log(rectX2);
 			//console.log(rectY2);
-			context.fillRect(node.x, node.y, node.w, node.h);
+			context.fillRect(node.x - node.w/2, node.y - node.h/2, node.w, node.h);
 			context.setLineDash([0, 0]);
-			continue;
-		}
-
-	        context.beginPath();
-	        context.arc(node.x, node.y, node.r, 0, 2 * Math.PI, false);
-	        context.fillStyle = color;
-	        context.fill();
-	        context.lineWidth = 5;
-	        context.stroke();		
+		} else if (node.type == 0) {
+			context.beginPath();
+			context.arc(node.x, node.y, node.r, 0, 2 * Math.PI, false);
+			context.fillStyle = color;
+			context.fill();
+		}	
 		if (channel.edges[i] == null || channel.edges[i].length == 0){ //Just draw a dot if there are no edges connected to the node
 			//TODO: refactor this if...else... into a single if...
 
@@ -60,12 +58,15 @@ function drawChannel(channel, color){
 					drawChannelLine(u.x, u.y, v.x, v.y, edge.weight);
 				} else if (edge.type == 1) {
 					//Jagged mixer
+					context.strokeStyle = color;
 					drawJaggedMixerLine(u.x, u.y, v.x, v.y, edge.wavelength, edge.weight, edge.amplitude); //change interval
 				} else if (edge.type == 2) {
 					//Rectangular mixer
+					context.strokeStyle = color;
 					drawRectMixerLine(u.x, u.y, v.x, v.y, edge.wavelength, edge.weight, edge.amplitude);
 				} else if (edge.type == 3){
 					//Sinusoidal mixer
+					context.strokeStyle = color;
 					drawSinusoidalMixerLine(u.x, u.y, v.x, v.y, edge.wavelength, edge.weight, edge.amplitude);
 				}			
 			}
@@ -83,13 +84,14 @@ function refreshCanvas(){
 	drawGrid(canvas, gridSize);
 
 	//Draw the channels
+
 	drawChannel(collection.channel, "#aaaaaa");
 
 	//Draw selected and preview channels
 	if (selectedCollection != null && selectedCollection.channel.nodes.length > 0) {
 		drawChannel(selectedCollection.channel, "#dddddd");
 	}
-
+	
 	if (previewCollection != null && previewCollection.channel.nodes.length > 0){
 		drawChannel(previewCollection.channel, "#ff0000");
 	}
@@ -117,44 +119,49 @@ function refreshCanvas(){
 	        context.stroke();
 	}
 	
+
+	context.strokeStyle = "#FF0000";
+	context.beginPath();
+        context.arc(rotateX, rotateY, 5, 0, 2 * Math.PI, false);
+        context.fillStyle = "#ffffff";
+        context.fill();
+        context.lineWidth = 1;
+        context.stroke();
+
 	context.strokeStyle = "#000000";
 	context.fillStyle = "#000000";
 
+
 	//Draw the box select box outline
-	if(cursorMode == CursorModeEnum.SELECT.BOX && anchorMouseX != -1){
+	if(cursorMode == CursorModeEnum.SELECT.BOX){
 		context.setLineDash([5, 15]);
 		context.strokeStyle = "#FF0000";
 		context.lineWidth = 2;
-		if(anchorMouseX2 == -1){
-			context.strokeRect(anchorMouseX, anchorMouseY, mouseX - anchorMouseX, mouseY - anchorMouseY);
+		if(boxMouseX2 == -1){
+	
+			context.strokeRect(boxMouseX, boxMouseY, mouseX - boxMouseX, mouseY - boxMouseY);
 		}
 		else{
-			context.strokeRect(anchorMouseX, anchorMouseY, anchorMouseX2 - anchorMouseX, anchorMouseY2 - anchorMouseY);
+			console.log("anchor mouse x2 is not -1");
+			context.strokeRect(boxMouseX, boxMouseY, boxMouseX2 - boxMouseX, boxMouseY2 - boxMouseY);
 		}
 		context.setLineDash([0, 0]);
 	}
 	//Draw the measurement outline
-	if ((cursorMode == CursorModeEnum.OPERATE.MEASURE || cursorMode == CursorModeEnum.OPERATE.RESIZE) && measureX1 != -1) {
-		console.log("measure x1, measure y1, measure x2, measure y2, mousex, mousey");
-		console.log(measureX1);
-		console.log(measureY1);
-		console.log(measureX2);
-		console.log(measureY2);
-		console.log(mouseX);
-		console.log(mouseY);
+	if ((cursorMode == CursorModeEnum.OPERATE.REFLECT) && reflectX1 != -1) {
 		context.setLineDash([5, 15]);
 		context.strokeStyle = "#ff0000";
 		context.lineWidth = 2;
-		if (measureX2 == -1) {
+		if (reflectX2 == -1) {
 			context.beginPath();
-			context.moveTo(measureX1, measureY1);
+			context.moveTo(reflectX1, reflectY1);
 			context.lineTo(mouseX, mouseY);
 			context.closePath();
 			context.stroke();
 		} else {
 			context.beginPath();
-			context.moveTo(measureX1, measureY1);
-			context.lineTo(measureX2, measureY2);
+			context.moveTo(reflectX1, reflectY1);
+			context.lineTo(reflectX2, reflectY2);
 			context.closePath();
 			context.stroke();
 		}
@@ -175,10 +182,6 @@ function refreshCanvas(){
 			context.setLineDash([0, 0]);
 		}
 	}
-
-
-	
-
 }
 
 function drawChannelLine(x1, y1, x2, y2, weight){

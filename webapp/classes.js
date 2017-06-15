@@ -82,6 +82,7 @@ class Channel{
 		//console.log(nodeToAdd);
 
 		//TODO: how to handle duplicate nodes w/ different radii?
+		//RESOLVED: they don't exist: nodes are replaced when they are changed
 
 		//Check if this is already a node
 		var currNodeIndex = this.nodes.indexOf(nodeToAdd);
@@ -142,6 +143,7 @@ class Channel{
 
 	addChannel(channel){
 		for (var i = 0; i < channel.nodes.length; i++){
+			if (channel.edges[i].length == 0) this.addNode(channel.nodes[i]); //add if no edges
 			for (var j = 0; j < channel.edges[i].length; j++){
 				this.addEdge(channel, channel.edges[i][j]);
 			}
@@ -171,10 +173,66 @@ class Channel{
 		
 	}
 
+	setEdgeType(u, v, newType, newWavelength, newAmplitude){
+		for (var i = 0; i < this.edges[u].length; i++){
+			var edge = this.edges[u][i];
+			if (edge.v == v) {
+				edge.type = type; //Type of edge (straight channel =0, jagged mixer=1, rectangular mixer=2, sinusoidal mixer=3, etc)
+				edge.wavelength = wavelength; //Size of zig zags in a mixer (0 by default if not a mixer)
+				edge.amplitude = amplitude; //height of zig zags in a mixer (0 by default if not a mixer)
+			}
+		}
+		for (var i = 0; i < this.edges[v].length; i++){
+			var edge = this.edges[v][i];
+			if (edge.v == u){
+				edge.type = type; //Type of edge (straight channel =0, jagged mixer=1, rectangular mixer=2, sinusoidal mixer=3, etc)
+				edge.wavelength = wavelength; //Size of zig zags in a mixer (0 by default if not a mixer)
+				edge.amplitude = amplitude; //height of zig zags in a mixer (0 by default if not a mixer)
+			}
+		}
+		
+		return 0;
+	}
+
+	setEdgeWeight(u, v, newWeight){
+		for (var i = 0; i < this.edges[u].length; i++){
+			var edge = this.edges[u][i];
+			if (edge.v == v) {
+				edge.weight = newWeight; 
+			}
+		}
+		for (var i = 0; i < this.edges[v].length; i++){
+			var edge = this.edges[v][i];
+			if (edge.v == u){
+				edge.weight = newWeight;
+			}
+		}
+		
+		return 0;
+	}
+
+	setEdgeLength(uIdx, vIdx, newLength){
+		var u = this.nodes[uIdx]; 
+		var v = this.nodes[vIdx];
+
+		var scaleFactor = newLength/dist(u.x, u.y, v.x, v.y);
+
+		var midpointX = (u.x + v.x)/2;
+		var midpointY = (u.y + v.y)/2;
+
+		this.nodes[uIdx].x = midpointX+scaleFactor*(u.x-midpointX);
+		this.nodes[uIdx].y = midpointY+scaleFactor*(u.y-midpointY);
+
+		this.nodes[vIdx].x = midpointX+scaleFactor*(v.x-midpointX);
+		this.nodes[vIdx].y = midpointY+scaleFactor*(v.y-midpointY);
+
+		return 0;
+	}
+
 	distBetweenNodes(u, v){
 
-		var nodeU = this.nodes[u];
-		var nodeV = this.nodes[v];
+		var nodeU = this.nodes[u]; //make sure not buggy in deletion case
+		var nodeV = this.nodes[v]; //in that case could be this.nodes[this.edges[u][v].u]; and this.nodes[this.edges[u][v].v];
 
 		var x1 = nodeU.x;
 		var y1 = nodeU.y;
@@ -184,20 +242,99 @@ class Channel{
 		return dist(x1, y1, x2, y2);
 
 	}
+
+	containsNode(node) {
+		for (var i = 0; i < this.nodes.length; i++){
+			if (this.nodes[i] == null) continue;
+			if (this.nodes[i].equals(node)) return true;
+		}	
+		return false;
+	}
+
+	idxOf(node){
+		if (!this.containsNode(node)) return -1;
+		for (var i = 0; i < this.nodes.length; i++){
+			if (this.nodes[i] == null) continue;
+			if (this.nodes[i].equals(node)) return i;
+		}	
+	}
+
+	containsEdge(collection, edge){
+		var u = collection.channel.nodes[edge.u];
+		var v = collection.channel.nodes[edge.v];
+		for (var i = 0; i < this.nodes.length; i++){
+			if (this.nodes[i] == null) continue;
+			for (var j = 0; j < this.edges[i].length; j++){
+				if (this.edges[i] == null) continue;
+				if (this.edges[i][j] == null) continue;
+				var u2 = this.nodes[this.edges[i][j].u];
+				var v2 = this.nodes[this.edges[i][j].v];
+				if (u.equals(u2) && v.equals(v2)) return true;
+				if (v.equals(u2) && u.equals(v2)) return true;
+			}		
+		}
+	}
+
+	idxOfU(collection, edge){
+		if (!this.containsEdge(collection, edge)) return -1;
+		var u = collection.channel.nodes[edge.u];
+		var v = collection.channel.nodes[edge.v];
+		for (var i = 0; i < this.nodes.length; i++){
+			if (this.nodes[i] == null) continue;
+			for (var j = 0; j < this.edges[i].length; j++){
+				if (this.edges[i] == null) continue;
+				if (this.edges[i][j] == null) continue;
+				var u2 = this.nodes[this.edges[i][j].u];
+				var v2 = this.nodes[this.edges[i][j].v];
+				if (u.equals(u2) && v.equals(v2)) return i;
+			}		
+		}
+		return -1;
+	}
+
+	idxOfV(collection, edge){
+		if (!this.containsEdge(collection, edge)) return -1;
+		var u = collection.channel.nodes[edge.u];
+		var v = collection.channel.nodes[edge.v];
+		for (var i = 0; i < this.nodes.length; i++){
+			if (this.nodes[i] == null) continue;
+			for (var j = 0; j < this.edges[i].length; j++){
+				if (this.edges[i] == null) continue;
+				if (this.edges[i][j] == null) continue;
+				var u2 = this.nodes[this.edges[i][j].u];
+				var v2 = this.nodes[this.edges[i][j].v];
+				if (u.equals(v2) && v.equals(u2)) return i;
+			}		
+		}
+		return -1;
+	}
 }
 
 class Node{
 	//Add color and type later
 	constructor(x, y, r, type, w, h){
-		this.x = x;
-		this.y = y;
-		this.r = r;
+		this.x = x; //center for round nodes AND rect
+		this.y = y; //center for round nodes AND rect
+		this.r = r; //radius for round nodes
 		this.type = type; //type = 0 for round, 1 for rect
 		this.w = w; //w = width for rect
 		this.h = h; //h = height for rect
+		this.fixed = false; //by default
 	}
 	equals(otherNode){
 		return (this.x == otherNode.x && this.y == otherNode.y && this.r == otherNode.r); //Sufficient for now
+	}
+
+	setRadius(r) {
+		if (this.type == 0) this.r = r;
+	}
+	
+	setWidth(w){
+		if (this.type == 1) this.w = w;
+	}
+
+	setLength(l){
+		if (this.type == 1) this.l = l;	
 	}
 }
 
@@ -250,6 +387,11 @@ class Collection{
 		//it will only delete the selected edges
 	
 		//Deleting single nodes
+
+		
+			
+
+
 		var tempToDeleteCollection = new Collection();
 		console.log("nodes and edges");
 		console.log(collectionToDelete.channel.nodes);
@@ -264,8 +406,10 @@ class Collection{
 			console.log("Deleting only nodes");
 			for (var i = 0; i < collectionToDelete.channel.nodes.length; i++){
 				var node = this.channel.nodes.indexOf(collectionToDelete.channel.nodes[i]); //Index of node in original channel
-				tempToDeleteCollection.channel.addNode(collectionToDelete.channel, collectionToDelete.channel.nodes[i]); //Add all nodes
+				//tempToDeleteCollection.channel.addNode(collectionToDelete.channel, collectionToDelete.channel.nodes[i]); //Add all nodes
+				tempToDeleteCollection.channel.addNode(collectionToDelete.channel.nodes[i]);				
 				//Find all the edges connected to that node 
+				if (node < 0 || node >= this.channel.edges.length) continue;
 				for (var j = 0; j < this.channel.edges[node].length; j++){
 					var edge = this.channel.edges[node][j];
 					tempToDeleteCollection.channel.addEdge(this.channel, edge); //Add all edges
@@ -352,12 +496,32 @@ class Collection{
 			//console.log(i);
 			//console.log(this.channel.edges[i].length);
 			//console.log(this.channel.nodes[i].r);
-			if (this.channel.edges[i].length == 0 && this.channel.nodes[i].r == 1){
+
+			//INVARIANT: IF ALL THE EDGES CONNECTED TO A NODE HAVE BEEN DELETED THE NODE SHOULD BE DELETED AS WELL
+			//IN ANY CASE
+			//WE CAN CHANGE THIS IF NEEDED
+			//not sure if this is the desired behavior for collection regions
+			/*if (this.channel.edges[i].length == 0){
 				this.channel.edges[i] = null;
 				this.channel.nodes[i] = null; 
 				//TODO: need to add checks that things aren't null now, probably this breaks things
+			}*/
+
+		}
+
+		//Delete single nodes in the collection
+		for (var i = 0; i < collectionToDelete.channel.nodes.length; i++){
+			var node = collectionToDelete.channel.nodes[i];
+			var localNodeIdx = this.channel.nodes.indexOf(node);
+			if (localNodeIdx >= 0 && localNodeIdx < this.channel.nodes.length) {
+				if (this.channel.edges[localNodeIdx] == 0) { //If length is 0
+					this.channel.nodes[localNodeIdx] = null;
+					this.channel.edges[localNodeIdx] = null;
+				}
 			}
 		}
+		
+
 		console.log("final channel");
 		console.log(this.channel);
 		
